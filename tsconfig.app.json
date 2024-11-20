@@ -26,7 +26,8 @@
     "paths": {
       "~/*": ["src/*"],
       "~com/*": ["src/components/*"]
-    }
+    },
+    "typeRoots": ["node_modules/@types"]
   },
   "include": ["src"]
 }
