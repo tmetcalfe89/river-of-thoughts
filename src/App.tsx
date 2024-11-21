@@ -1,11 +1,35 @@
+import { onAuthChange } from "~/api/firebase";
 import { useEffect, useState } from "react";
-import { onAuthChange } from "./api/firebase";
-import Page from "~com/page/Page";
-import AuthedNav from "~com/nav/AuthedNav";
-import PublicNav from "~com/nav/PublicNav";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Jam from "./components/views/Jam";
+import Jot from "./components/views/Jot";
+import See from "./components/views/See";
+import Main from "./components/views/Main";
+import FirebaseContext from "./components/data/FirebaseContext";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Main />,
+    children: [
+      {
+        path: "jam",
+        element: <Jam />,
+      },
+      {
+        path: "jot",
+        element: <Jot />,
+      },
+      {
+        path: "see",
+        element: <See />,
+      },
+    ],
+  },
+]);
 
 function App() {
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState<boolean>(false);
 
   useEffect(() => {
     onAuthChange((user) => {
@@ -15,20 +39,9 @@ function App() {
   }, []);
 
   return (
-    <Page name="River of Thoughts">
-      <p>
-        Your sporadic thoughts may be fleeting, but they don't have to be
-        ephemeral.
-      </p>
-      <p>
-        If you have a good idea for a writing prompt, jot it down for later.
-      </p>
-      <p>
-        If you have the time to sit down and jam to one of the prompts you've
-        accumulated, hit the button and jam!
-      </p>
-      {authed ? <AuthedNav /> : <PublicNav />}
-    </Page>
+    <FirebaseContext.Provider value={{ authed }}>
+      <RouterProvider router={router} />
+    </FirebaseContext.Provider>
   );
 }
 

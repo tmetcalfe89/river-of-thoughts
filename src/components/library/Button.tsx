@@ -1,10 +1,14 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Property } from "csstype";
-import { CSSProperties, useMemo } from "react";
+import { CSSProperties, ElementType, useMemo } from "react";
 
 import { IconSides, IconSidesDirection } from "./ButtonUtil";
+import { Link } from "react-router-dom";
 
 type ButtonVariant = "primary" | "secondary";
 
@@ -19,6 +23,7 @@ export interface ButtonProps
   gap?: Property.Gap<string | number>;
   variant?: ButtonVariant;
   iconProps?: Omit<FontAwesomeIconProps, "icon">;
+  to?: string;
 }
 
 export default function Button({
@@ -29,6 +34,7 @@ export default function Button({
   style,
   variant = "primary",
   iconProps = {},
+  to,
   ...props
 }: ButtonProps) {
   const iStyle = useMemo<CSSProperties>(
@@ -45,10 +51,21 @@ export default function Button({
 
   const iClassName = useMemo<string>(() => classNames(variant), [variant]);
 
+  const InternalElementType = useMemo<ElementType>(
+    () => (to !== undefined ? Link : "button"),
+    [to]
+  );
+
   return (
-    <button {...props} style={iStyle} className={iClassName}>
+    <InternalElementType
+      {...props}
+      style={iStyle}
+      className={iClassName}
+      role="button"
+      to={to}
+    >
       {icon && <FontAwesomeIcon icon={icon} {...iconProps} />}
       <span>{children}</span>
-    </button>
+    </InternalElementType>
   );
 }
