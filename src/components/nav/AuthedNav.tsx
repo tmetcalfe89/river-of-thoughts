@@ -24,6 +24,7 @@ export default function AuthedNav() {
         variant="secondary"
         onClick={logout}
         iconProps={{ flip: "vertical" }}
+        to="/"
       >
         Disconnect
       </Button>
