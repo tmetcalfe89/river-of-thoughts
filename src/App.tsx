@@ -8,9 +8,14 @@ function App() {
     <Page name="River of Thoughts">
       <p>
         Your sporadic thoughts may be fleeting, but they don't have to be
-        ephemeral. If you have a good idea for a writing prompt, jot it down for
-        later. If you have the time to sit down and jam to one of the prompts
-        you've accumulated, hit the button and jam!
+        ephemeral.
+      </p>
+      <p>
+        If you have a good idea for a writing prompt, jot it down for later.
+      </p>
+      <p>
+        If you have the time to sit down and jam to one of the prompts you've
+        accumulated, hit the button and jam!
       </p>
       <div role="group">
         <Button icon={faLightbulb}>Jot down a prompt</Button>
