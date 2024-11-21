@@ -1,4 +1,9 @@
-import { faBookOpenReader, faLeaf, faLightbulb, faPenNib } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookOpenReader,
+  faLeaf,
+  faLightbulb,
+  faPenNib,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Button from "./components/Button";
 import Page from "./components/page/Page";
@@ -21,7 +26,9 @@ function App() {
         <Button icon={faLightbulb}>Jot down a prompt</Button>
         <Button icon={faPenNib}>Jam on a prompt</Button>
         <Button icon={faBookOpenReader}>See your prompts</Button>
-        <Button icon={faLeaf}>Disconnect</Button>
+        <Button icon={faLeaf} variant="secondary">
+          Disconnect
+        </Button>
       </div>
     </Page>
   );

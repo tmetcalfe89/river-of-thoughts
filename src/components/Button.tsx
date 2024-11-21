@@ -6,7 +6,7 @@ import { CSSProperties, useMemo } from "react";
 
 import { IconSides, IconSidesDirection } from "./ButtonUtil";
 
-type ButtonVariant = "primary" | "secondary" | "cancel";
+type ButtonVariant = "primary" | "secondary";
 
 export interface ButtonProps
   extends React.DetailedHTMLProps<
