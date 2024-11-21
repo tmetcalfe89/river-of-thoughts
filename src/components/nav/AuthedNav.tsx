@@ -2,7 +2,7 @@ import {
   faBookOpenReader,
   faLightbulb,
   faPenNib,
-  faPlug,
+  faLeaf,
 } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "~/api/firebase";
 import Button from "~com/library/Button";
@@ -19,13 +19,7 @@ export default function AuthedNav() {
       <Button icon={faBookOpenReader} to="/see">
         See your prompts
       </Button>
-      <Button
-        icon={faPlug}
-        variant="secondary"
-        onClick={logout}
-        iconProps={{ flip: "vertical" }}
-        to="/"
-      >
+      <Button icon={faLeaf} variant="secondary" onClick={logout} to="/">
         Disconnect
       </Button>
     </div>
