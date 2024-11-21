@@ -1,5 +1,5 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Property } from "csstype";
 import { CSSProperties, useMemo } from "react";
@@ -18,6 +18,7 @@ export interface ButtonProps
   iconSide?: IconSides;
   gap?: Property.Gap<string | number>;
   variant?: ButtonVariant;
+  iconProps?: Omit<FontAwesomeIconProps, "icon">;
 }
 
 export default function Button({
@@ -27,6 +28,7 @@ export default function Button({
   gap = "0.25em",
   style,
   variant = "primary",
+  iconProps = {},
   ...props
 }: ButtonProps) {
   const iStyle = useMemo<CSSProperties>(
@@ -45,7 +47,7 @@ export default function Button({
 
   return (
     <button {...props} style={iStyle} className={iClassName}>
-      {icon && <FontAwesomeIcon icon={icon} />}
+      {icon && <FontAwesomeIcon icon={icon} {...iconProps} />}
       <span>{children}</span>
     </button>
   );

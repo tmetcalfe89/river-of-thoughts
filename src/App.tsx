@@ -1,14 +1,19 @@
-import {
-  faBookOpenReader,
-  faLeaf,
-  faLightbulb,
-  faPenNib,
-} from "@fortawesome/free-solid-svg-icons";
-
-import Button from "./components/Button";
-import Page from "./components/page/Page";
+import { useEffect, useState } from "react";
+import { onAuthChange } from "./api/firebase";
+import Page from "~com/page/Page";
+import AuthedNav from "~com/nav/AuthedNav";
+import PublicNav from "~com/nav/PublicNav";
 
 function App() {
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    onAuthChange((user) => {
+      const newAuthed = !!user;
+      setAuthed(newAuthed);
+    });
+  }, []);
+
   return (
     <Page name="River of Thoughts">
       <p>
@@ -22,14 +27,7 @@ function App() {
         If you have the time to sit down and jam to one of the prompts you've
         accumulated, hit the button and jam!
       </p>
-      <div role="group">
-        <Button icon={faLightbulb}>Jot down a prompt</Button>
-        <Button icon={faPenNib}>Jam on a prompt</Button>
-        <Button icon={faBookOpenReader}>See your prompts</Button>
-        <Button icon={faLeaf} variant="secondary">
-          Disconnect
-        </Button>
-      </div>
+      {authed ? <AuthedNav /> : <PublicNav />}
     </Page>
   );
 }
