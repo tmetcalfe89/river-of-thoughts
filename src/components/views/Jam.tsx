@@ -5,15 +5,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import FirebaseContext, { IPrompt } from "../data/FirebaseContext";
+import FirebaseContext, { IJot } from "../data/FirebaseContext";
 import Button from "../library/Button";
 import { useNavigate } from "react-router-dom";
 
 export default function Jam() {
   const navigate = useNavigate();
-  const { getRandomJot: fetchRandomPrompt, addJam: submitJam } =
-    useContext(FirebaseContext);
-  const [prompt, setPrompt] = useState<IPrompt | null>(null);
+  const { getRandomJot, addJam, authed } = useContext(FirebaseContext);
+  const [prompt, setPrompt] = useState<IJot | null>(null);
   const [fetching, setFetching] = useState<boolean>(false);
   const [jam, setJam] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -24,13 +23,13 @@ export default function Jam() {
   const handleFetchPrompt = useCallback(async () => {
     try {
       setFetching(true);
-      setPrompt(await fetchRandomPrompt());
+      setPrompt(await getRandomJot());
     } catch (error) {
       alert((error as Error).message);
     } finally {
       setFetching(false);
     }
-  }, [fetchRandomPrompt]);
+  }, [getRandomJot]);
 
   const handleSubmitJam: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
@@ -38,7 +37,7 @@ export default function Jam() {
       try {
         if (!prompt) throw new Error("");
         setSubmitting(true);
-        await submitJam(prompt.uid, jam);
+        await addJam(prompt.uid, jam);
         alert("Jam sesh complete!");
         navigate("/see");
       } catch (error) {
@@ -47,7 +46,7 @@ export default function Jam() {
         setSubmitting(false);
       }
     },
-    [jam, navigate, prompt, submitJam]
+    [jam, navigate, prompt, addJam]
   );
 
   return (
@@ -76,7 +75,7 @@ export default function Jam() {
           <Button disabled={submitting}>Complete Jam</Button>
         </form>
       ) : (
-        <Button onClick={handleFetchPrompt} disabled={fetching}>
+        <Button onClick={handleFetchPrompt} disabled={fetching || !authed}>
           Prompt Me
         </Button>
       )}

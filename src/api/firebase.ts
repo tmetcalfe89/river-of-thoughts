@@ -18,7 +18,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { IPrompt as IJot } from "~/components/data/FirebaseContext";
+import { IJot as IJot } from "~/components/data/FirebaseContext";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqyveVscQ5_uvchr191oWYa_AOOYmGRvc",
@@ -43,6 +43,7 @@ const signIn = async () => {
 };
 
 let cachedJots: IJot[] | null = null;
+let cachedJams: IJot[] | null = null;
 
 const getRandomJot = async (): Promise<IJot> => {
   if (cachedJots != null) {
@@ -67,6 +68,31 @@ const getRandomJot = async (): Promise<IJot> => {
     cachedJots!.push({ ...(doc.data() as IJot), uid: doc.id })
   );
   return cachedJots[Math.floor(Math.random() * cachedJots.length)];
+};
+
+const getJams = async (): Promise<IJot[]> => {
+  if (cachedJams != null) {
+    return cachedJams;
+  }
+  const auth = getAuth();
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("Connect to the World to connect to your Jams.");
+  const db = getFirestore();
+  const docs = await getDocs(
+    query(
+      collection(db, "jots"),
+      where("uid", "==", uid),
+      where("jam", "!=", "")
+    )
+  );
+  if (docs.size === 0) {
+    throw new Error("You haven't jammed your Jams on any Jots.");
+  }
+  cachedJams = [];
+  docs.forEach((doc) =>
+    cachedJams!.push({ ...(doc.data() as IJot), uid: doc.id })
+  );
+  return cachedJams;
 };
 
 const addJot = async (description: string) => {
@@ -106,4 +132,4 @@ const logout = () => {
   signOut(auth);
 };
 
-export { getRandomJot, addJot, addJam, signIn, onAuthChange, logout };
+export { getRandomJot, addJot, addJam, signIn, onAuthChange, logout, getJams };

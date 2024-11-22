@@ -3,7 +3,7 @@ import Button from "~com/library/Button";
 import FirebaseContext from "../data/FirebaseContext";
 
 export default function Jot() {
-  const { addJot: addPrompt } = useContext(FirebaseContext);
+  const { addJot, authed } = useContext(FirebaseContext);
   const [prompt, setPrompt] = useState("");
   const [adding, setAdding] = useState(false);
 
@@ -12,7 +12,7 @@ export default function Jot() {
       e.preventDefault();
       try {
         setAdding(true);
-        await addPrompt(prompt);
+        await addJot(prompt);
         setPrompt("");
         alert("Jot jotted down!");
       } catch (error) {
@@ -21,7 +21,7 @@ export default function Jot() {
         setAdding(false);
       }
     },
-    [addPrompt, prompt]
+    [addJot, prompt]
   );
 
   return (
@@ -33,7 +33,7 @@ export default function Jot() {
         onChange={(e) => setPrompt(e.target.value)}
         aria-invalid={!prompt}
       />
-      <button>Jot</button>
+      <Button disabled={!authed}>Jot</Button>
       <Button variant="secondary" to="/">
         Nevermind
       </Button>
