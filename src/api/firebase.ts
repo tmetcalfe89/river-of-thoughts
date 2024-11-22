@@ -8,16 +8,17 @@ import {
   User,
   signOut,
 } from "firebase/auth";
-// import {
-//   addDoc,
-//   collection,
-//   deleteDoc,
-//   doc,
-//   getDocs,
-//   getFirestore,
-//   query,
-//   where,
-// } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  // deleteDoc,
+  // doc,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+import { IPrompt as IJot } from "~/components/data/FirebaseContext";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqyveVscQ5_uvchr191oWYa_AOOYmGRvc",
@@ -41,43 +42,42 @@ const signIn = async () => {
   return { token, user };
 };
 
-// let cached: Desire[] | null = null;
+let cachedJots: IJot[] | null = null;
 
-// const getRandomDesire = async (): Promise<Desire> => {
-//   if (cached != null) {
-//     return cached[Math.floor(Math.random() * cached.length)];
-//   }
-//   const auth = getAuth();
-//   const uid = auth.currentUser?.uid;
-//   if (!uid) throw new Error("Connect to the World to connect to your Desires.");
-//   const db = getFirestore();
-//   const docs = await getDocs(
-//     query(collection(db, "simple-desire"), where("uid", "==", uid))
-//   );
-//   if (docs.size === 0) {
-//     throw new Error("To remember, you must first memorize.");
-//   }
-//   cached = [];
-//   docs.forEach((doc) =>
-//     cached!.push({ ...(doc.data() as Desire), desireUid: doc.id })
-//   );
-//   return cached[Math.floor(Math.random() * cached.length)];
-// };
+const getRandomJot = async (): Promise<IJot> => {
+  if (cachedJots != null) {
+    return cachedJots[Math.floor(Math.random() * cachedJots.length)];
+  }
+  const auth = getAuth();
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("Connect to the World to connect to your Jots.");
+  const db = getFirestore();
+  const docs = await getDocs(
+    query(collection(db, "jots"), where("uid", "==", uid))
+  );
+  if (docs.size === 0) {
+    throw new Error("You haven't jotted down any Jots.");
+  }
+  cachedJots = [];
+  docs.forEach((doc) =>
+    cachedJots!.push({ ...(doc.data() as IJot), uid: doc.id })
+  );
+  return cachedJots[Math.floor(Math.random() * cachedJots.length)];
+};
 
-// const addDesire = async (description: string) => {
-//   if (!description) throw new Error("A desire must have essence.");
-//   const auth = getAuth();
-//   const uid = auth.currentUser?.uid;
-//   if (!uid) throw new Error("Connect to the world to connect to your desires.");
-//   const db = getFirestore();
-//   const desire: Desire = {
-//     uid,
-//     description,
-//   };
-//   const created = await addDoc(collection(db, "simple-desire"), desire);
-//   cached = null;
-//   return created;
-// };
+const addJot = async (description: string) => {
+  if (!description) throw new Error("A Jot must have essence.");
+  const auth = getAuth();
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("Connect to the world to connect to your Jots.");
+  const db = getFirestore();
+  const jot: IJot = {
+    uid,
+    description,
+  };
+  await addDoc(collection(db, "jots"), jot);
+  cachedJots = null;
+};
 
 // const removeDesire = async (desireUid: string) => {
 //   const db = getFirestore();
@@ -96,8 +96,8 @@ const logout = () => {
 };
 
 export {
-  // getRandomDesire,
-  // addDesire,
+  getRandomJot,
+  addJot,
   // removeDesire,
   signIn,
   onAuthChange,

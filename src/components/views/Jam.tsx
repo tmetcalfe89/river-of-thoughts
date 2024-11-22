@@ -35,7 +35,7 @@ export default function Jam() {
       try {
         if (!prompt) throw new Error("");
         setSubmitting(true);
-        submitJam(prompt.uuid, jam);
+        submitJam(prompt.uid, jam);
       } catch (error) {
         alert((error as Error).message);
       } finally {

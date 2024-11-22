@@ -1,4 +1,4 @@
-import { onAuthChange } from "~/api/firebase";
+import { addJot, onAuthChange } from "~/api/firebase";
 import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Jam from "./components/views/Jam";
@@ -42,10 +42,10 @@ function App() {
     <FirebaseContext.Provider
       value={{
         authed,
-        addPrompt: async () => undefined,
+        addJot: addJot,
         fetchRandomPrompt: async () => ({
           description: "Sample Prompt",
-          uuid: "notarealuuid",
+          uid: "notarealuuid",
         }),
         submitJam: async () => undefined,
       }}

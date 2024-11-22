@@ -3,7 +3,7 @@ import Button from "~com/library/Button";
 import FirebaseContext from "../data/FirebaseContext";
 
 export default function Jot() {
-  const { addPrompt } = useContext(FirebaseContext);
+  const { addJot: addPrompt } = useContext(FirebaseContext);
   const [prompt, setPrompt] = useState("");
   const [adding, setAdding] = useState(false);
 
