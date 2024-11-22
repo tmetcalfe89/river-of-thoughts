@@ -4,7 +4,10 @@ export interface IJot {
   description: string;
   uid: string;
   jam: string;
+  userUid: string;
 }
+
+export type IJotNew = Omit<IJot, "userUid">;
 
 export interface IFirebaseContext {
   authed: boolean;
@@ -21,6 +24,7 @@ const FirebaseContext = createContext<IFirebaseContext>({
   getRandomJot: async () => ({
     description: "Sample Prompt",
     uid: "notarealuuid",
+    userUid: "notarealuseruid",
     jam: "",
   }),
   addJam: async () => undefined,

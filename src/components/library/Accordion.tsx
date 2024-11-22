@@ -19,7 +19,7 @@ export default function Accordion({ title, children }: AccordionProps) {
   return (
     <details open={open} onClick={toggleOpen}>
       <summary>{title}</summary>
-      <div>{children}</div>
+      {children}
     </details>
   );
 }

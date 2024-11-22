@@ -59,6 +59,8 @@ export default function Jam() {
         );
       setRemoving(true);
       await removeJot(jot.uid);
+      alert("Jot released into the ephemeral nature of reality.");
+      setJot(null);
     } catch (error) {
       alert((error as Error).message);
     } finally {

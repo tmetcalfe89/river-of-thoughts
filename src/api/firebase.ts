@@ -19,7 +19,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { IJot as IJot } from "~/components/data/FirebaseContext";
+import { IJot as IJot, IJotNew } from "~/components/data/FirebaseContext";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBqyveVscQ5_uvchr191oWYa_AOOYmGRvc",
@@ -88,7 +88,7 @@ const addJot = async (description: string) => {
   const uid = auth.currentUser?.uid;
   if (!uid) throw new Error("Connect to the world to connect to your Jots.");
   const db = getFirestore();
-  const jot: IJot = {
+  const jot: IJotNew = {
     uid,
     description,
     jam: "",
