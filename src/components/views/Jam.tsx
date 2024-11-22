@@ -37,7 +37,7 @@ export default function Jam() {
         if (!prompt) throw new Error("");
         setSubmitting(true);
         await submitJam(prompt.uid, jam);
-        alert("Jam sesh complete.");
+        alert("Jam sesh complete!");
       } catch (error) {
         alert((error as Error).message);
       } finally {

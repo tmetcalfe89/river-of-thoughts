@@ -14,6 +14,7 @@ export default function Jot() {
         setAdding(true);
         await addPrompt(prompt);
         setPrompt("");
+        alert("Jot jotted down!");
       } catch (error) {
         alert((error as Error).message);
       } finally {
