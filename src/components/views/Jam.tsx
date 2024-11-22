@@ -11,11 +11,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function Jam() {
   const navigate = useNavigate();
-  const { getRandomJot, addJam, authed } = useContext(FirebaseContext);
-  const [prompt, setPrompt] = useState<IJot | null>(null);
+  const { getRandomJot, addJam, authed, removeJot } =
+    useContext(FirebaseContext);
+  const [jot, setJot] = useState<IJot | null>(null);
   const [fetching, setFetching] = useState<boolean>(false);
   const [jam, setJam] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [removing, setRemoving] = useState(false);
 
   const characterCount = useMemo(() => jam.length, [jam]);
   const wordCount = useMemo(() => jam.match(/\w+/g)?.length || 0, [jam]);
@@ -23,7 +25,7 @@ export default function Jam() {
   const handleFetchPrompt = useCallback(async () => {
     try {
       setFetching(true);
-      setPrompt(await getRandomJot());
+      setJot(await getRandomJot());
     } catch (error) {
       alert((error as Error).message);
     } finally {
@@ -35,9 +37,9 @@ export default function Jam() {
     async (e) => {
       e.preventDefault();
       try {
-        if (!prompt) throw new Error("");
+        if (!jot) throw new Error("");
         setSubmitting(true);
-        await addJam(prompt.uid, jam);
+        await addJam(jot.uid, jam);
         alert("Jam sesh complete!");
         navigate("/see");
       } catch (error) {
@@ -46,39 +48,69 @@ export default function Jam() {
         setSubmitting(false);
       }
     },
-    [jam, navigate, prompt, addJam]
+    [jam, navigate, jot, addJam]
   );
 
+  const handleRemoveJot = useCallback(async () => {
+    try {
+      if (!jot)
+        throw new Error(
+          "How did you get here? Can't remove a Jot if you don't have a Jot selected."
+        );
+      setRemoving(true);
+      await removeJot(jot.uid);
+    } catch (error) {
+      alert((error as Error).message);
+    } finally {
+      setRemoving(false);
+    }
+  }, [jot, removeJot]);
+
+  if (!jot) {
+    return (
+      <Button onClick={handleFetchPrompt} disabled={fetching || !authed}>
+        Prompt Me
+      </Button>
+    );
+  }
+
   return (
-    <>
-      {prompt ? (
-        <form
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 1,
-          }}
-          onSubmit={handleSubmitJam}
+    <form
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        flexGrow: 1,
+      }}
+      onSubmit={handleSubmitJam}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <hgroup>
+          <h2>{jot.description}</h2>
+          <p>
+            {characterCount} characters | {wordCount} words
+          </p>
+        </hgroup>
+        <Button
+          variant="secondary"
+          type="button"
+          onClick={handleRemoveJot}
+          disabled={removing || submitting}
         >
-          <hgroup>
-            <h2>{prompt.description}</h2>
-            <p>
-              {characterCount} characters | {wordCount} words
-            </p>
-          </hgroup>
-          <textarea
-            disabled={submitting}
-            style={{ flexGrow: 1, resize: "none" }}
-            value={jam}
-            onChange={(e) => setJam(e.target.value)}
-          />
-          <Button disabled={submitting}>Complete Jam</Button>
-        </form>
-      ) : (
-        <Button onClick={handleFetchPrompt} disabled={fetching || !authed}>
-          Prompt Me
+          Let it go
         </Button>
-      )}
-    </>
+      </div>
+      <textarea
+        disabled={removing || submitting}
+        style={{ flexGrow: 1, resize: "none" }}
+        value={jam}
+        onChange={(e) => setJam(e.target.value)}
+      />
+      <Button disabled={removing || submitting}>Complete Jam</Button>
+    </form>
   );
 }

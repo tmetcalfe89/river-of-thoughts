@@ -11,6 +11,7 @@ import {
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   getFirestore,
@@ -43,56 +44,42 @@ const signIn = async () => {
 };
 
 let cachedJots: IJot[] | null = null;
-let cachedJams: IJot[] | null = null;
 
-const getRandomJot = async (): Promise<IJot> => {
-  if (cachedJots != null) {
-    return cachedJots[Math.floor(Math.random() * cachedJots.length)];
+const getJots = async () => {
+  if (cachedJots !== null) {
+    return cachedJots;
   }
   const auth = getAuth();
   const uid = auth.currentUser?.uid;
   if (!uid) throw new Error("Connect to the World to connect to your Jots.");
   const db = getFirestore();
   const docs = await getDocs(
-    query(
-      collection(db, "jots"),
-      where("uid", "==", uid),
-      where("jam", "==", "")
-    )
+    query(collection(db, "jots"), where("uid", "==", uid))
   );
   if (docs.size === 0) {
     throw new Error("You haven't jotted down any Jots.");
   }
-  cachedJots = [];
+  const fetchedJots: IJot[] = [];
   docs.forEach((doc) =>
-    cachedJots!.push({ ...(doc.data() as IJot), uid: doc.id })
+    fetchedJots!.push({ ...(doc.data() as IJot), uid: doc.id })
   );
-  return cachedJots[Math.floor(Math.random() * cachedJots.length)];
+  return fetchedJots;
+};
+
+const getRandomJot = async (): Promise<IJot> => {
+  cachedJots = await getJots();
+  const unfinishedJots = cachedJots.filter((jot) => !jot.jam);
+  if (unfinishedJots.length === 0)
+    throw new Error("You don't have any un-Jam'd Jots.");
+  return unfinishedJots[Math.floor(Math.random() * unfinishedJots.length)];
 };
 
 const getJams = async (): Promise<IJot[]> => {
-  if (cachedJams != null) {
-    return cachedJams;
-  }
-  const auth = getAuth();
-  const uid = auth.currentUser?.uid;
-  if (!uid) throw new Error("Connect to the World to connect to your Jams.");
-  const db = getFirestore();
-  const docs = await getDocs(
-    query(
-      collection(db, "jots"),
-      where("uid", "==", uid),
-      where("jam", "!=", "")
-    )
-  );
-  if (docs.size === 0) {
-    throw new Error("You haven't jammed your Jams on any Jots.");
-  }
-  cachedJams = [];
-  docs.forEach((doc) =>
-    cachedJams!.push({ ...(doc.data() as IJot), uid: doc.id })
-  );
-  return cachedJams;
+  cachedJots = await getJots();
+  const finishedJots = cachedJots.filter((jot) => jot.jam);
+  if (finishedJots.length === 0)
+    throw new Error("You don't have any Jam'd Jots.");
+  return finishedJots;
 };
 
 const addJot = async (description: string) => {
@@ -122,6 +109,18 @@ const addJam = async (jotUid: string, jam: string) => {
   cachedJots = null;
 };
 
+const removeJot = async (jotUid: string) => {
+  if (!jotUid) throw new Error("Which Jot though?");
+
+  const auth = getAuth();
+  const uid = auth.currentUser?.uid;
+  if (!uid)
+    throw new Error("Connect to the world to connect to your Jots & Jams.");
+  const db = getFirestore();
+  await deleteDoc(doc(db, "jots", jotUid));
+  cachedJots = null;
+};
+
 const onAuthChange = (callback: NextOrObserver<User>) => {
   const auth = getAuth();
   onAuthStateChanged(auth, callback);
@@ -132,4 +131,13 @@ const logout = () => {
   signOut(auth);
 };
 
-export { getRandomJot, addJot, addJam, signIn, onAuthChange, logout, getJams };
+export {
+  getRandomJot,
+  addJot,
+  addJam,
+  signIn,
+  onAuthChange,
+  logout,
+  getJams,
+  removeJot,
+};

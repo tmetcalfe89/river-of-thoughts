@@ -12,6 +12,7 @@ export interface IFirebaseContext {
   addJam: (promptUuid: string, jam: string) => Promise<void>;
   getRandomJot: () => Promise<IJot>;
   getJams: () => Promise<IJot[]>;
+  removeJot: (jotUid: string) => Promise<void>;
 }
 
 const FirebaseContext = createContext<IFirebaseContext>({
@@ -24,6 +25,7 @@ const FirebaseContext = createContext<IFirebaseContext>({
   }),
   addJam: async () => undefined,
   getJams: async () => [],
+  removeJot: async () => undefined,
 });
 
 export default FirebaseContext;

@@ -4,6 +4,7 @@ import {
   getJams,
   getRandomJot,
   onAuthChange,
+  removeJot,
 } from "~/api/firebase";
 import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -52,6 +53,7 @@ function App() {
         getRandomJot,
         addJam,
         getJams,
+        removeJot,
       }}
     >
       <RouterProvider router={router} />
