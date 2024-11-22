@@ -47,7 +47,7 @@ export default function Jam() {
         setSubmitting(false);
       }
     },
-    [jam, prompt, submitJam]
+    [jam, navigate, prompt, submitJam]
   );
 
   return (
