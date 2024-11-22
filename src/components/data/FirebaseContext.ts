@@ -9,13 +9,13 @@ export interface IFirebaseContext {
   authed: boolean;
   addJot: (prompt: string) => Promise<void>;
   submitJam: (promptUuid: string, jam: string) => Promise<void>;
-  fetchRandomPrompt: () => Promise<IPrompt>;
+  getRandomJot: () => Promise<IPrompt>;
 }
 
 const FirebaseContext = createContext<IFirebaseContext>({
   authed: false,
   addJot: async () => undefined,
-  fetchRandomPrompt: async () => ({
+  getRandomJot: async () => ({
     description: "Sample Prompt",
     uid: "notarealuuid",
   }),

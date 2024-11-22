@@ -9,7 +9,7 @@ import FirebaseContext, { IPrompt } from "../data/FirebaseContext";
 import Button from "../library/Button";
 
 export default function Jam() {
-  const { fetchRandomPrompt, submitJam } = useContext(FirebaseContext);
+  const { getRandomJot: fetchRandomPrompt, submitJam } = useContext(FirebaseContext);
   const [prompt, setPrompt] = useState<IPrompt | null>(null);
   const [fetching, setFetching] = useState<boolean>(false);
   const [jam, setJam] = useState("");
