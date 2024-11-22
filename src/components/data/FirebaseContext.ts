@@ -3,12 +3,13 @@ import { createContext } from "react";
 export interface IPrompt {
   description: string;
   uid: string;
+  jam: string;
 }
 
 export interface IFirebaseContext {
   authed: boolean;
   addJot: (prompt: string) => Promise<void>;
-  submitJam: (promptUuid: string, jam: string) => Promise<void>;
+  addJam: (promptUuid: string, jam: string) => Promise<void>;
   getRandomJot: () => Promise<IPrompt>;
 }
 
@@ -18,8 +19,9 @@ const FirebaseContext = createContext<IFirebaseContext>({
   getRandomJot: async () => ({
     description: "Sample Prompt",
     uid: "notarealuuid",
+    jam: ""
   }),
-  submitJam: async () => undefined,
+  addJam: async () => undefined,
 });
 
 export default FirebaseContext;

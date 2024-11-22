@@ -9,7 +9,8 @@ import FirebaseContext, { IPrompt } from "../data/FirebaseContext";
 import Button from "../library/Button";
 
 export default function Jam() {
-  const { getRandomJot: fetchRandomPrompt, submitJam } = useContext(FirebaseContext);
+  const { getRandomJot: fetchRandomPrompt, addJam: submitJam } =
+    useContext(FirebaseContext);
   const [prompt, setPrompt] = useState<IPrompt | null>(null);
   const [fetching, setFetching] = useState<boolean>(false);
   const [jam, setJam] = useState("");
@@ -30,12 +31,13 @@ export default function Jam() {
   }, [fetchRandomPrompt]);
 
   const handleSubmitJam: FormEventHandler<HTMLFormElement> = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
       try {
         if (!prompt) throw new Error("");
         setSubmitting(true);
-        submitJam(prompt.uid, jam);
+        await submitJam(prompt.uid, jam);
+        alert("Jam sesh complete.");
       } catch (error) {
         alert((error as Error).message);
       } finally {

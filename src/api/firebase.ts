@@ -11,11 +11,11 @@ import {
 import {
   addDoc,
   collection,
-  // deleteDoc,
-  // doc,
+  doc,
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { IPrompt as IJot } from "~/components/data/FirebaseContext";
@@ -53,7 +53,11 @@ const getRandomJot = async (): Promise<IJot> => {
   if (!uid) throw new Error("Connect to the World to connect to your Jots.");
   const db = getFirestore();
   const docs = await getDocs(
-    query(collection(db, "jots"), where("uid", "==", uid))
+    query(
+      collection(db, "jots"),
+      where("uid", "==", uid),
+      where("jam", "==", "")
+    )
   );
   if (docs.size === 0) {
     throw new Error("You haven't jotted down any Jots.");
@@ -74,16 +78,23 @@ const addJot = async (description: string) => {
   const jot: IJot = {
     uid,
     description,
+    jam: "",
   };
   await addDoc(collection(db, "jots"), jot);
   cachedJots = null;
 };
 
-// const removeDesire = async (desireUid: string) => {
-//   const db = getFirestore();
-//   await deleteDoc(doc(db, "simple-desire", desireUid));
-//   cached = null;
-// };
+const addJam = async (jotUid: string, jam: string) => {
+  if (!jotUid) throw new Error("A Jam must have a Jot.");
+  if (!jam) throw new Error("A Jam must have essence.");
+
+  const auth = getAuth();
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("Connect to the world to connect to your Jams.");
+  const db = getFirestore();
+  await updateDoc(doc(db, "jots", jotUid), { jam });
+  cachedJots = null;
+};
 
 const onAuthChange = (callback: NextOrObserver<User>) => {
   const auth = getAuth();
@@ -95,11 +106,4 @@ const logout = () => {
   signOut(auth);
 };
 
-export {
-  getRandomJot,
-  addJot,
-  // removeDesire,
-  signIn,
-  onAuthChange,
-  logout,
-};
+export { getRandomJot, addJot, addJam, signIn, onAuthChange, logout };

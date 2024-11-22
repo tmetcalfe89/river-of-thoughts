@@ -1,4 +1,4 @@
-import { addJot, getRandomJot, onAuthChange } from "~/api/firebase";
+import { addJam, addJot, getRandomJot, onAuthChange } from "~/api/firebase";
 import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Jam from "./components/views/Jam";
@@ -44,7 +44,7 @@ function App() {
         authed,
         addJot,
         getRandomJot,
-        submitJam: async () => undefined,
+        addJam,
       }}
     >
       <RouterProvider router={router} />
