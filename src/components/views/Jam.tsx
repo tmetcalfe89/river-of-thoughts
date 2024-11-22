@@ -7,8 +7,10 @@ import {
 } from "react";
 import FirebaseContext, { IPrompt } from "../data/FirebaseContext";
 import Button from "../library/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function Jam() {
+  const navigate = useNavigate();
   const { getRandomJot: fetchRandomPrompt, addJam: submitJam } =
     useContext(FirebaseContext);
   const [prompt, setPrompt] = useState<IPrompt | null>(null);
@@ -38,6 +40,7 @@ export default function Jam() {
         setSubmitting(true);
         await submitJam(prompt.uid, jam);
         alert("Jam sesh complete!");
+        navigate("/see");
       } catch (error) {
         alert((error as Error).message);
       } finally {
