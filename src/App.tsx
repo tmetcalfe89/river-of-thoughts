@@ -39,7 +39,17 @@ function App() {
   }, []);
 
   return (
-    <FirebaseContext.Provider value={{ authed }}>
+    <FirebaseContext.Provider
+      value={{
+        authed,
+        addPrompt: async () => undefined,
+        fetchRandomPrompt: async () => ({
+          description: "Sample Prompt",
+          uuid: "notarealuuid",
+        }),
+        submitJam: async () => undefined,
+      }}
+    >
       <RouterProvider router={router} />
     </FirebaseContext.Provider>
   );

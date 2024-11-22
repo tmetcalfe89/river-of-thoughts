@@ -10,19 +10,21 @@ export default function Main() {
 
   return (
     <Page name="River of Thoughts">
-      <p>
-        Your sporadic thoughts may be fleeting, but they don't have to be
-        ephemeral.
-      </p>
-      <p>
-        If you have a good idea for a writing prompt, jot it down for later.
-      </p>
-      <p>
-        If you have the time to sit down and jam to one of the prompts you've
-        accumulated, hit the button and jam!
-      </p>
-      {authed ? <AuthedNav /> : <PublicNav />}
-      <Outlet />
+      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <p>
+          Your sporadic thoughts may be fleeting, but they don't have to be
+          ephemeral.
+        </p>
+        <p>
+          If you have a good idea for a writing prompt, jot it down for later.
+        </p>
+        <p>
+          If you have the time to sit down and jam to one of the prompts you've
+          accumulated, hit the button and jam!
+        </p>
+        {authed ? <AuthedNav /> : <PublicNav />}
+        <Outlet />
+      </div>
     </Page>
   );
 }
