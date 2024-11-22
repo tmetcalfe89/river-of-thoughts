@@ -17,7 +17,7 @@ export default function AuthedNav() {
         Jam on a prompt
       </Button>
       <Button icon={faBookOpenReader} to="/see">
-        See your prompts
+        See your Jams
       </Button>
       <Button icon={faLeaf} variant="secondary" onClick={logout} to="/">
         Disconnect
